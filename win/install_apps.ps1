@@ -129,9 +129,7 @@ function install-visualstudio {
     Write-Host "Installing Visual Studio $edition via winget..." -ForegroundColor Cyan
     # Minimal workloads for C++ and desktop dev; adjust as needed
     $workloads = @(
-        '--add Microsoft.VisualStudio.Workload.NativeDesktop',
-        '--add Microsoft.VisualStudio.Workload.ManagedDesktop',
-        '--add Microsoft.VisualStudio.Workload.Universal'
+        '--add Microsoft.VisualStudio.Workload.NativeDesktop'
     ) -join ' '
 
     $args = @(
