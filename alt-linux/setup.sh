@@ -126,7 +126,7 @@ REPO_LIST=(
   cmake
   ninja-build
   python3
-  python3-pip
+  pip
   nodejs
   npm
   wget
@@ -158,10 +158,8 @@ REPO_LIST=(
   gcc-c++
   make
   pkg-config
-  clang
+  clang-tools
   llvm
-  lld
-  lldb
   mingw64-gcc
 
   # Desktop apps
