@@ -3,10 +3,8 @@
 
 [CmdletBinding()]
 param(
-    [switch]$install_visual_studio = $false,
     [ValidateSet('Community','BuildTools','Enterprise','Professional')]
     [string]$visual_studio_edition = 'Community',
-    [switch]$install_ghidra = $true
 )
 
 function is-admin {
@@ -103,31 +101,6 @@ function install-scoop-list {
     return $failed
 }
 
-function rust-toolchains-setup {
-    # Ensure rustup is available (installed via Scoop)
-    if (-not (Get-Command rustup -ErrorAction SilentlyContinue)) {
-        Write-Error "rustup not found. Ensure 'rustup' installed via Scoop."
-        return
-    }
-    Write-Host "Configuring Rust toolchains via rustup..." -ForegroundColor Cyan
-
-    # Core Rust toolchains: stable-msvc (Windows MSVC), stable-gnu (MinGW)
-    # Install both so you can choose per-project; default to MSVC if Visual Studio installed; otherwise GNU.
-    $msvcDefault = $false
-    if ($script:install_visual_studio -and (is-admin)) { $msvcDefault = $true }
-
-    rustup toolchain install stable-msvc
-    rustup toolchain install stable-gnu
-
-    if ($msvcDefault) {
-        rustup default stable-msvc
-    } else {
-        rustup default stable-gnu
-    }
-
-    rustup component add rustfmt clippy
-}
-
 function install-visualstudio {
     param(
         [ValidateSet('Community','BuildTools','Enterprise','Professional')]
@@ -173,16 +146,12 @@ function install-visualstudio {
 # -------------------------
 # Main
 # -------------------------
-Write-Host "Minimal Windows setup using Scoop, Rust, and dev tools..." -ForegroundColor Cyan
+Write-Host "Minimal Windows setup using Scoop, and dev tools..." -ForegroundColor Cyan
 ensure-executionpolicy
 
-# 1) Scoop setup
 ensure-scoop
 add-scoop-buckets
 
-# 2) Base packages via Scoop
-# Do NOT include 'obsidian' and DO NOT install 'cygwin'
-# Add dev CLI tools you like (rg, fzf, hyperfine, etc), llvm/clang, tracy, joplin
 $base_scoop = @(
     'git',
     '7zip',
@@ -359,42 +328,14 @@ if ($failed_scoop.Count -gt 0) {
     Write-Warning "Scoop failed for: $($failed_scoop -join ', ')"
 }
 
-# 3) Rust toolchains and components with rustup
-rust-toolchains-setup
-
-# 4) Install Chocolatey as fallback and for packages not in Scoop
 ensure-choco
 
-# 5) Fallback installs via Chocolatey (if any failed on Scoop)
-if ($failed_scoop.Count -gt 0) {
-    Write-Host "Attempting Chocolatey fallback for failed packages..." -ForegroundColor Cyan
-    $failed_after_choco = @()
-    foreach ($pkg in $failed_scoop) {
-        if (-not (install-choco-package -name $pkg)) {
-            $failed_after_choco += $pkg
-        }
-    }
-    if ($failed_after_choco.Count -gt 0) {
-        Write-Warning "Still failed after Chocolatey: $($failed_after_choco -join ', ')"
-    } else {
-        Write-Host "All previously failed packages installed via Chocolatey." -ForegroundColor Green
-    }
+if (install-visualstudio -edition $visual_studio_edition) {
+    Write-Host "Visual Studio $visual_studio_edition installed." -ForegroundColor Green
+else {
+    Write-Warning "Visual Studio installation failed or skipped."
 }
 
-# 6) Optional: install Visual Studio (MSVC toolchain support)
-if ($install_visual_studio) {
-    if (install-visualstudio -edition $visual_studio_edition) {
-        Write-Host "Visual Studio $visual_studio_edition installed." -ForegroundColor Green
-        # Prefer MSVC by default now that VS is present
-        if (Get-Command rustup -ErrorAction SilentlyContinue) {
-            rustup default stable-msvc
-        }
-    } else {
-        Write-Warning "Visual Studio installation failed or skipped."
-    }
-}
-
-# 7) Final updates and cleanup
 Write-Host "Updating Scoop and cleaning old versions..." -ForegroundColor Cyan
 scoop update *
 scoop cleanup *
