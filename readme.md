@@ -40,7 +40,7 @@ ALT Linux (priority: epm play → epmi → apt-get)
 ## Entry points
 
 - Windows: [win/activate.ps1](win/activate.ps1)
-- ALT Linux: [alt-linux/setup.sh](alt/alt_dev_setup.sh)
+- ALT Linux: [alt-linux/setup.sh](alt-linux/alt_dev_setup.sh)
 
 ## Notes
 
