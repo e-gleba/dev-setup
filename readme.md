@@ -1,59 +1,52 @@
-<div align="center">
-  <a href="https://github.com/geugenm/windows-setup">
-    <img src=".github/img/logo.png" alt="Logo" width="80" height="80">
-  </a>
-  <h3 align="center">Windows Setup Automation for Developers</h3>
+# dev-setup
 
-  <p align="center">
-    Windows Setup Automation for Developers is a project that aims to simplify and automate the Windows setup process for developers. By leveraging this repository, you can save time and focus on what matters most - coding!
-    <br />
-    <a href="https://github.com/geugenm/windows-setup/tree/master/docs"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template">README template</a>
-    ·
-    <a href="https://github.com/geugenm/windows-setup/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/geugenm/windows-setup/issues">Request Feature</a>
-  </p>
-</div>
+Minimal, reproducible setup for developers on Windows and ALT Linux. Scoop-first on Windows. epm-first on ALT. No PATH hacks, no noise.
 
-## Description
+## Supported platforms
 
-Welcome to **Windows Setup Automation for Developers**, a comprehensive repository designed to streamline the Windows configuration process for developers. This project aims to save time and effort by automating the setup of essential development tools and configurations on Windows systems. Whether you're setting up a new development environment or looking to refresh your existing setup, this repository provides a simple and efficient solution.
+- Windows 10/11
+- ALT Linux (Sisyphus)
 
-## Table of Contents
+## Quick start
 
-- [Installation](#installation)
-- [Usage](#usage)
-- [Features](#features)
-- [Contributing](#contributing)
-- [License](#license)
+Windows
 
-## Installation
+- `git clone https://github.com/e-gleba/dev-setup.git`
+- `cd dev-setup/win`
+- `.\activate.ps1` (run in a regular PowerShell; elevate only for system-wide components)
 
-To get started with the Windows Setup Automation for Developers, follow these steps:
+ALT Linux
 
-1. Clone the repository to your local machine.
-2. Navigate to the project `scripts` directory.
-3. Run the setup script.
+- Ensure sudo is enabled: <https://plafon.gitbook.io/alt-zero/start/sudo>
+- Install epm (eepm): `sudo apt-get update && sudo apt-get install -y eepm`
+- `git clone https://github.com/e-gleba/dev-setup.git`
+- `cd dev-setup/alt`
+- `sudo ./alt_dev_setup.sh`
 
-## Features
+## What gets installed
 
-- **Automated Tool Installation**: Installs essential development tools with a single command.
-- **Configuration Management**: Automatically configures system settings for optimal development performance.
-- **Customization**: Easily customize the setup to fit your specific development needs.
+Windows (via Scoop, fallback only if needed)
 
-## Contributing
+- CLI: ripgrep, fzf, hyperfine, bat, fd, eza, jq, zoxide, delta, bottom, duf, dust, procs
+- Toolchains: rustup (+rust-analyzer, uutils-coreutils), llvm/clang/lld, mingw, cmake, ninja
+- Apps: joplin, mpv, qbittorrent, syncthing
+- Debug/net: nmap, wireshark, imhex, ghidra, tracy
 
-Contributions are welcome! If you have a feature request, bug report, or wish to contribute to the project, please follow these steps:
+ALT Linux (priority: epm play → epmi → apt-get)
 
-1. Fork the repository.
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
-4. Push to the branch (`git push origin feature/AmazingFeature`).
-5. Open a Pull Request.
+- epm play: telegram, steam, yandex-browser, android-studio, gradle, discord, joplin, postman
+- Repo: gcc/g++, make, cmake, ninja, pkg-config, clang/llvm/lld/lldb, rustup, rust-analyzer, uutils-coreutils, ripgrep, fzf, hyperfine, bat, fd-find, eza, sd, git-delta, bottom, procs, duf, du-dust, jq, zoxide, mpv, qbittorrent, syncthing, nmap, wireshark, imhex, ghidra, tracy, qtcreator, godot, vcpkg
+
+## Entry points
+
+- Windows: [win/activate.ps1](win/activate.ps1)
+- ALT Linux: [alt-linux/setup.sh](alt/alt_dev_setup.sh)
+
+## Notes
+
+- Windows installs prefer user scope (Scoop). Run elevated only for components that require admin.
+- ALT Linux installs require root (sudo). For epm docs see: <https://alt-gnome.wiki/epm.html>
 
 ## License
 
-This project is licensed under the GNU License. See the [LICENSE](license) file for details.
+See [LICENSE](LICENSE).
